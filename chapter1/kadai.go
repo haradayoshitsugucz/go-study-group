@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // Calc opには+,-,×,÷の4つが渡ってくることを想定してxとyについて計算して返却(正常時はerrorはnilでよい)
@@ -69,21 +70,24 @@ func Pyramid(x int) string {
 	// ヒント：string <-> intにはstrconvを使う
 	// int -> stringはstrconv.Ioa() https://golang.org/pkg/strconv/#Itoa
 
-	ret := ""
+	var sb strings.Builder
 
 	// TODO Q4
 
 	for i := 1; i <= x; i++ {
 
 		for j := 1; j <= i; j++ {
-			ret = ret + strconv.Itoa(j)
+			//sb = sb + strconv.Itoa(j)
+			sb.WriteString(strconv.Itoa(j))
+
 		}
 		if x == i {
 			break
 		}
-		ret = ret + "\n"
+		//sb = sb + "\n"
+		sb.WriteString("\n")
 	}
-	return ret
+	return sb.String()
 }
 
 // StringSum x,yをintにキャストし合計値を返却 (正常終了時、errorはnilでよい)
@@ -133,6 +137,10 @@ func SumFromFileNumber(filePath string) (int, error) {
 			return 0, err
 		}
 		ret = ret + i
+	}
+
+	if scanner.Err() != nil {
+		return 0, err
 	}
 
 	return ret, nil
