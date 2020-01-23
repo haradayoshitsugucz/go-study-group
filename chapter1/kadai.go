@@ -1,5 +1,15 @@
 package chapter1
 
+import (
+	"bufio"
+	"fmt"
+	"github.com/apbgo/go-study-group/chapter1/lib"
+	"log"
+	"os"
+	"strconv"
+	"strings"
+)
+
 // Calc opには+,-,×,÷の4つが渡ってくることを想定してxとyについて計算して返却(正常時はerrorはnilでよい)
 // 想定していないopが渡って来た時には0とerrorを返却
 func Calc(op string, x, y int) (int, error) {
@@ -10,7 +20,22 @@ func Calc(op string, x, y int) (int, error) {
 
 	// TODO Q1
 
-	return 0, nil
+	ret := 0
+
+	switch op {
+	case "+":
+		ret = x + y
+	case "-":
+		ret = x - y
+	case "×":
+		ret = x * y
+	case "÷":
+		ret = x / y
+	default:
+		return 0, fmt.Errorf("引数は、+,-,×,÷ のいずれかを指定してください")
+	}
+
+	return ret, nil
 }
 
 // StringEncode 引数strの長さが5以下の時キャメルケースにして返却、それ以外であればスネークケースにして返却
@@ -20,15 +45,22 @@ func StringEncode(str string) string {
 
 	// TODO Q2
 
-	return ""
+	if len(str) <= 5 {
+		return lib.ToCamel(str)
+
+	} else {
+		return lib.ToSnake(str)
+	}
 }
 
 // Sqrt 数値xが与えられたときにz²が最もxに近い数値zを返却
 func Sqrt(x float64) float64 {
 
-	// TODO Q3
-
-	return 0
+	z := 1.0
+	for i := 0; i < 10; i++ {
+		z -= (z*z - x) / (2 * z)
+	}
+	return z
 }
 
 // Pyramid x段のピラミッドを文字列にして返却
@@ -38,9 +70,24 @@ func Pyramid(x int) string {
 	// ヒント：string <-> intにはstrconvを使う
 	// int -> stringはstrconv.Ioa() https://golang.org/pkg/strconv/#Itoa
 
+	var sb strings.Builder
+
 	// TODO Q4
 
-	return ""
+	for i := 1; i <= x; i++ {
+
+		for j := 1; j <= i; j++ {
+			//sb = sb + strconv.Itoa(j)
+			sb.WriteString(strconv.Itoa(j))
+
+		}
+		if x == i {
+			break
+		}
+		//sb = sb + "\n"
+		sb.WriteString("\n")
+	}
+	return sb.String()
 }
 
 // StringSum x,yをintにキャストし合計値を返却 (正常終了時、errorはnilでよい)
@@ -52,7 +99,19 @@ func StringSum(x, y string) (int, error) {
 
 	// TODO Q5
 
-	return 0, nil
+	i, err := strconv.Atoi(x)
+	if err != nil {
+		return 0, err
+	}
+
+	j, err := strconv.Atoi(y)
+	if err != nil {
+		return 0, err
+	}
+
+	ret := i + j
+
+	return ret, nil
 }
 
 // SumFromFileNumber ファイルを開いてそこに記載のある数字の和を返却
@@ -62,5 +121,27 @@ func SumFromFileNumber(filePath string) (int, error) {
 
 	// TODO Q6 オプション
 
-	return 0, nil
+	file, err := os.Open(filePath)
+	defer file.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	scanner := bufio.NewScanner(file)
+	ret := 0
+
+	for scanner.Scan() {
+		i, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			return 0, err
+		}
+		ret = ret + i
+	}
+
+	if scanner.Err() != nil {
+		return 0, err
+	}
+
+	return ret, nil
 }
