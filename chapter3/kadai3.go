@@ -1,5 +1,7 @@
 package chapter3
 
+import "fmt"
+
 type Dog struct{}
 
 func (d Dog) Bark() string {
@@ -18,5 +20,17 @@ func (c Cat) Crow() string {
 // Catの場合はCrowを実行した結果
 // その他の場合はerrorを返却してください。
 func Kadai3(x interface{}) (string, error) {
-	return "", nil
+
+	ret := ""
+
+	switch xi := x.(type) {
+
+	case Dog:
+		ret = xi.Bark()
+	case Cat:
+		ret = xi.Crow()
+	default:
+		return ret, fmt.Errorf("エラー")
+	}
+	return ret, nil
 }
