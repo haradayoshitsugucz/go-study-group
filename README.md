@@ -1,4 +1,4 @@
-# go-study-group
+# go-study-groupXXXX
 勉強会用リポジトリ。  
 課題のベースなどを更新していきます。  
 
